@@ -1,0 +1,3482 @@
+
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Binglingo</title>
+
+<style>
+
+/* =========================================================
+   GENERAL
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+
+    margin: 0;
+
+    width: 100%;
+    height: 100%;
+
+    font-family: Arial, sans-serif;
+
+    background: #20252f;
+
+    color: white;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   GAME MASTER
+   ========================================================= */
+
+#app {
+
+    width: 100%;
+    height: 100vh;
+
+    padding: 20px;
+
+    background: #20252f;
+}
+
+.layout {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(430px, 58%)
+        1fr;
+
+    gap: 25px;
+
+    width: 100%;
+    height: 100%;
+}
+
+
+/* =========================================================
+   NUMBER TABLE
+   ========================================================= */
+
+.left {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.number-table {
+
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(10, 1fr);
+
+    grid-template-rows:
+        repeat(9, 1fr);
+
+    gap: 6px;
+}
+
+.cell {
+
+    background: #2b323e;
+
+    border: 2px solid #46505f;
+
+    border-radius: 8px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size:
+        clamp(
+            18px,
+            2.1vw,
+            32px
+        );
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        background .15s,
+        transform .1s,
+        border-color .15s;
+}
+
+.cell:hover {
+
+    transform: scale(1.03);
+
+    border-color: #738094;
+}
+
+.cell.drawn {
+
+    background: #36b37e;
+
+    border-color: #61d7a3;
+}
+
+
+/* =========================================================
+   RIGHT SIDE
+   ========================================================= */
+
+.right {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    min-width: 0;
+}
+
+#lingo {
+
+    min-height: 70px;
+
+    font-size:
+        clamp(
+            28px,
+            3.5vw,
+            58px
+        );
+
+    font-weight: bold;
+
+    margin-bottom: 15px;
+}
+
+#current {
+
+    font-size:
+        clamp(
+            110px,
+            15vw,
+            250px
+        );
+
+    font-weight: bold;
+
+    line-height: .85;
+
+    margin-bottom: 35px;
+}
+
+
+/* =========================================================
+   MAIN BUTTON AREA
+   ========================================================= */
+
+.buttons {
+
+    width:
+        min(
+            390px,
+            95%
+        );
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+button {
+
+    border: none;
+
+    border-radius: 10px;
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 23px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        transform .1s,
+        filter .1s,
+        opacity .15s;
+}
+
+button:hover {
+
+    filter: brightness(1.08);
+}
+
+button:active {
+
+    transform: scale(.98);
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+#reset {
+
+    width: 100%;
+
+    height: 65px;
+
+    background: #d64545;
+}
+
+
+/* =========================================================
+   DRAW
+   ========================================================= */
+
+#draw {
+
+    width: 100%;
+
+    height: 75px;
+
+    background: #36b37e;
+
+    font-size: 28px;
+
+    transition:
+        opacity .15s,
+        transform .1s;
+}
+
+#draw.locked {
+
+    opacity: .35;
+
+    cursor: not-allowed;
+}
+
+#draw:disabled {
+
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   BINGO TYPE ROWS
+   ========================================================= */
+
+/*
+   Each row contains TWO separate buttons.
+
+   LEFT:
+   bingo type
+
+   RIGHT:
+   Bingo action
+
+   They touch each other visually but remain
+   separate HTML buttons.
+*/
+
+.bingo-row {
+
+    width: 100%;
+
+    display: flex;
+
+    gap: 3px;
+}
+
+
+/* =========================================================
+   BINGO TYPE BUTTON
+   ========================================================= */
+
+.bingo-type-button {
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 58px;
+
+    background: #3b4352;
+
+    border-radius: 10px 3px 3px 10px;
+
+    font-size: 19px;
+
+    border: 2px solid transparent;
+}
+
+.bingo-type-button:hover {
+
+    background: #4b5566;
+}
+
+.bingo-type-button.selected {
+
+    background: #36b37e;
+
+    border-color: white;
+
+    box-shadow:
+        0 0 0 1px white;
+}
+
+
+/* =========================================================
+   SEPARATE BINGO BUTTON
+   ========================================================= */
+
+.bingo-action-button {
+
+    width: 125px;
+
+    flex-shrink: 0;
+
+    height: 58px;
+
+    background: #7b61ff;
+
+    border-radius:
+        3px
+        10px
+        10px
+        3px;
+
+    font-size: 19px;
+
+    border: 2px solid transparent;
+}
+
+.bingo-action-button:hover {
+
+    background: #8d76ff;
+}
+
+
+/* =========================================================
+   PLAYER SCREEN BUTTON
+   ========================================================= */
+
+#player {
+
+    width: 100%;
+
+    height: 65px;
+
+    background: #5865f2;
+
+    margin-top: 4px;
+}
+
+
+/* =========================================================
+   GAME MASTER BINGO OVERLAY
+   ========================================================= */
+
+#gmBingo {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 150;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size:
+        clamp(
+            100px,
+            22vw,
+            360px
+        );
+
+    font-weight: 900;
+
+    color: white;
+
+    background:
+        rgba(
+            16,
+            65,
+            39,
+            .94
+        );
+
+    text-shadow:
+        0 0 18px
+        rgba(255,255,255,.55),
+
+        0 6px 0
+        #b51f2a;
+
+    border:
+        18px solid #b51f2a;
+
+    box-shadow:
+        inset
+        0 0 0 12px
+        #f5d76e;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity .25s;
+}
+
+#gmBingo.show {
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   GAME MASTER CONFETTI
+   ========================================================= */
+
+.confetti {
+
+    position: fixed;
+
+    top: -20px;
+
+    width: 12px;
+    height: 18px;
+
+    z-index: 200;
+
+    pointer-events: none;
+
+    animation:
+        confettiFall
+        2.4s
+        linear
+        forwards;
+}
+
+@keyframes confettiFall {
+
+    to {
+
+        transform:
+            translate3d(
+                var(--x),
+                110vh,
+                0
+            )
+            rotate(720deg);
+    }
+}
+
+
+/* =========================================================
+   CHRISTMAS DECOR
+   ========================================================= */
+
+.christmas-decor {
+
+    position: fixed;
+
+    z-index: 210;
+
+    pointer-events: none;
+
+    font-size:
+        clamp(
+            28px,
+            4vw,
+            62px
+        );
+
+    line-height: 1;
+
+    animation:
+        christmasFloat
+        2.8s
+        ease-in-out
+        infinite;
+}
+
+@keyframes christmasFloat {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0)
+            rotate(-5deg);
+    }
+
+    50% {
+
+        transform:
+            translateY(-12px)
+            rotate(5deg);
+    }
+}
+
+.christmas-decor.candy-left {
+
+    left: 2vw;
+    top: 4vh;
+}
+
+.christmas-decor.candy-right {
+
+    right: 2vw;
+    top: 4vh;
+
+    animation-delay: .5s;
+}
+
+.christmas-decor.star-left {
+
+    left: 4vw;
+    bottom: 7vh;
+
+    animation-delay: .9s;
+}
+
+.christmas-decor.star-right {
+
+    right: 4vw;
+    bottom: 7vh;
+
+    animation-delay: 1.3s;
+}
+
+.christmas-decor.tree-left {
+
+    left: 1vw;
+    top: 42%;
+
+    animation-delay: .2s;
+}
+
+.christmas-decor.tree-right {
+
+    right: 1vw;
+    top: 42%;
+
+    animation-delay: .7s;
+}
+
+
+/* =========================================================
+   PLAYER SCREEN
+   ========================================================= */
+
+.player-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: #20252f;
+
+    z-index: 500;
+
+    display: none;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    overflow: hidden;
+
+    --ball-area-height: 360px;
+}
+
+.player-screen.active {
+
+    display: flex;
+}
+
+
+/* =========================================================
+   PLAYER BINGO TYPE
+   ========================================================= */
+
+.player-bingo-type {
+
+    position: absolute;
+
+    top: 25px;
+
+    left: 0;
+    right: 0;
+
+    z-index: 20;
+
+    font-size:
+        clamp(
+            35px,
+            5vw,
+            80px
+        );
+
+    font-weight: bold;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   PLAYER NUMBER
+   ========================================================= */
+
+.player-number-area {
+
+    position: absolute;
+
+    top: 20px;
+    left: 20px;
+    right: 20px;
+
+    bottom:
+        var(--ball-area-height);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.player-number {
+
+    font-size:
+        clamp(
+            150px,
+            min(30vw, 38vh),
+            440px
+        );
+
+    line-height: .9;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   PLAYER BALL AREA
+   ========================================================= */
+
+.player-ball-area {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+
+    height:
+        var(--ball-area-height);
+
+    overflow: visible;
+
+    z-index: 5;
+}
+
+.player-balls {
+
+    position: absolute;
+
+    left: 20px;
+    right: 20px;
+
+    bottom: 20px;
+
+    height:
+        calc(
+            100% - 40px
+        );
+
+    overflow: visible;
+}
+
+
+/* =========================================================
+   PLAYER BALLS
+   ========================================================= */
+
+.player-ball,
+.moving-player-ball {
+
+    position: absolute;
+
+    width: 66px;
+    height: 66px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #ffffff 0%,
+            #eeeeee 8%,
+            #bbbbbb 30%,
+            #777777 65%,
+            #444444 100%
+        );
+
+    color: #111;
+
+    font-size: 25px;
+
+    font-weight: bold;
+
+    box-shadow:
+        inset -8px -10px 15px
+        rgba(0,0,0,.35),
+
+        inset 7px 7px 12px
+        rgba(255,255,255,.45),
+
+        0 5px 12px
+        rgba(0,0,0,.4);
+
+    transform-origin: center;
+
+    user-select: none;
+}
+
+
+/* =========================================================
+   BALL COLORS
+   ========================================================= */
+
+.player-ball.range-1,
+.moving-player-ball.range-1 {
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #ffb3b3 0%,
+            #ff6666 30%,
+            #e53935 65%,
+            #9b1c1c 100%
+        );
+}
+
+.player-ball.range-2,
+.moving-player-ball.range-2 {
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #fff3a6 0%,
+            #ffd84d 30%,
+            #f4b400 65%,
+            #a66f00 100%
+        );
+}
+
+.player-ball.range-3,
+.moving-player-ball.range-3 {
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #b8f5c0 0%,
+            #59d66f 30%,
+            #22a447 65%,
+            #12652c 100%
+        );
+}
+
+.player-ball.range-4,
+.moving-player-ball.range-4 {
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #b8dcff 0%,
+            #5aa9ff 30%,
+            #2878d4 65%,
+            #17477f 100%
+        );
+}
+
+.player-ball.range-5,
+.moving-player-ball.range-5 {
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #e0c1ff 0%,
+            #b16cff 30%,
+            #7b3fc6 65%,
+            #482276 100%
+        );
+}
+
+.player-ball.range-6,
+.moving-player-ball.range-6 {
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #ffd0b0 0%,
+            #ff8a4c 30%,
+            #e85d04 65%,
+            #8a3500 100%
+        );
+}
+
+.player-ball.range-7,
+.moving-player-ball.range-7 {
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #ffc1e3 0%,
+            #ff69b4 30%,
+            #d62982 65%,
+            #7c164b 100%
+        );
+}
+
+.player-ball.range-8,
+.moving-player-ball.range-8 {
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #b9f3ee 0%,
+            #45d4c7 30%,
+            #159c91 65%,
+            #0b5e58 100%
+        );
+}
+
+.player-ball.range-9,
+.moving-player-ball.range-9 {
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #ffe0a3 0%,
+            #d69a3a 30%,
+            #a96516 65%,
+            #63370b 100%
+        );
+
+    color: white;
+}
+
+.player-ball.number-90,
+.moving-player-ball.number-90 {
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #fff6b0 0%,
+            #ffd700 30%,
+            #e5a900 65%,
+            #8a5a00 100%
+        );
+
+    color: white;
+
+    box-shadow:
+        inset -8px -10px 15px
+        rgba(0,0,0,.35),
+
+        inset 7px 7px 12px
+        rgba(255,255,255,.65),
+
+        0 0 18px
+        rgba(255,215,0,.8),
+
+        0 5px 12px
+        rgba(0,0,0,.4);
+}
+
+
+/* =========================================================
+   RESET BALL ANIMATION
+   ========================================================= */
+
+.player-ball.reset-roll,
+.moving-player-ball.reset-roll {
+
+    animation:
+        resetBallRoll
+        1.2s
+        cubic-bezier(.2,.8,.2,1)
+        forwards;
+}
+
+@keyframes resetBallRoll {
+
+    from {
+
+        transform:
+            translateX(0)
+            rotate(0deg);
+
+        opacity: 1;
+    }
+
+    to {
+
+        transform:
+            translateX(-150vw)
+            rotate(-1080deg);
+
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   PLAYER BINGO
+   ========================================================= */
+
+.player-bingo {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size:
+        clamp(
+            100px,
+            22vw,
+            360px
+        );
+
+    font-weight: 900;
+
+    color: white;
+
+    background:
+        rgba(
+            16,
+            65,
+            39,
+            .94
+        );
+
+    text-shadow:
+        0 0 18px
+        rgba(255,255,255,.55),
+
+        0 6px 0
+        #b51f2a;
+
+    border:
+        18px solid #b51f2a;
+
+    box-shadow:
+        inset
+        0 0 0 12px
+        #f5d76e;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity .25s;
+}
+
+.player-bingo.show {
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   PLAYER CONFETTI
+   ========================================================= */
+
+.player-confetti {
+
+    position: fixed;
+
+    top: -20px;
+
+    width: 12px;
+    height: 18px;
+
+    z-index: 600;
+
+    pointer-events: none;
+
+    animation:
+        playerConfettiFall
+        2.4s
+        linear
+        forwards;
+}
+
+@keyframes playerConfettiFall {
+
+    to {
+
+        transform:
+            translate3d(
+                var(--x),
+                110vh,
+                0
+            )
+            rotate(720deg);
+    }
+}
+
+
+/* =========================================================
+   PLAYER GREENERY
+   ========================================================= */
+
+/* Festive evergreen garland – player screen only */
+.player-greenery {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    top: 18px;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--ball-area-height) + 12px);
+    overflow: hidden;
+}
+
+.player-greenery::before,
+.player-greenery::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: min(25vw, 310px);
+    height: 175px;
+    background:
+        radial-gradient(ellipse 34px 13px at 20% 40%, #4b9b59 0 90%, transparent 100%),
+        radial-gradient(ellipse 50px 15px at 34% 25%, #246a39 0 90%, transparent 100%),
+        radial-gradient(ellipse 55px 16px at 55% 38%, #39844a 0 90%, transparent 100%),
+        radial-gradient(ellipse 47px 14px at 72% 55%, #19522f 0 90%, transparent 100%),
+        repeating-conic-gradient(from 15deg at 40% 25%, #215d35 0deg 9deg, #347e43 10deg 17deg, transparent 18deg 24deg);
+    background-size: 100% 100%;
+    clip-path: polygon(0 0, 100% 0, 90% 20%, 100% 32%, 77% 42%, 93% 60%, 62% 58%, 68% 86%, 43% 66%, 24% 100%, 18% 65%, 0 73%);
+    filter: drop-shadow(0 5px 3px #071c12);
+}
+.player-greenery::before { left: 0; transform: rotate(-5deg); }
+.player-greenery::after { right: 0; transform: scaleX(-1) rotate(-5deg); }
+
+.player-greenery-branch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(86vw, 1050px);
+    height: 135px;
+    transform: translateX(-50%);
+    border-top: 9px solid #184b2c;
+    border-radius: 50%;
+    background:
+        radial-gradient(ellipse 13px 48px at 10% 17%, #2e7a42 0 80%, transparent 85%),
+        radial-gradient(ellipse 15px 55px at 25% 18%, #3b9250 0 80%, transparent 85%),
+        radial-gradient(ellipse 17px 56px at 40% 15%, #236d3b 0 80%, transparent 85%),
+        radial-gradient(ellipse 17px 56px at 60% 15%, #378a49 0 80%, transparent 85%),
+        radial-gradient(ellipse 15px 55px at 75% 18%, #256c3a 0 80%, transparent 85%),
+        radial-gradient(ellipse 13px 48px at 90% 17%, #3b9250 0 80%, transparent 85%);
+    filter: drop-shadow(0 4px 3px #0a2515);
+}
+.player-greenery-branch::before {
+    content: "";
+    position: absolute;
+    inset: -5px 0 12px;
+    border-radius: 50%;
+    background: repeating-linear-gradient(110deg, transparent 0 10px, #3d9250 11px 14px, transparent 15px 22px),
+                repeating-linear-gradient(70deg, transparent 0 11px, #1c6035 12px 16px, transparent 17px 24px);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 95%);
+}
+.player-greenery-ornaments {
+    position: absolute;
+    top: 8px;
+    left: 4%;
+    right: 4%;
+    height: 130px;
+}
+.player-greenery-ornaments span {
+    position: absolute;
+    font-size: clamp(22px, 2.8vw, 38px);
+    filter: drop-shadow(0 3px 3px #081b10);
+}
+.player-greenery-ornaments span:nth-child(1) { left: 8%; top: 22px; }
+.player-greenery-ornaments span:nth-child(2) { left: 23%; top: 56px; }
+.player-greenery-ornaments span:nth-child(3) { left: 38%; top: 26px; }
+.player-greenery-ornaments span:nth-child(4) { left: 55%; top: 55px; }
+.player-greenery-ornaments span:nth-child(5) { left: 71%; top: 23px; }
+.player-greenery-ornaments span:nth-child(6) { left: 86%; top: 55px; }
+.player-greenery-ornaments span:nth-child(7) { left: 16%; top: 3px; font-size: 20px; }
+.player-greenery-ornaments span:nth-child(8) { left: 47%; top: 7px; font-size: 23px; }
+.player-greenery-ornaments span:nth-child(9) { left: 79%; top: 4px; font-size: 20px; }
+.player-greenery-ornaments span:nth-child(10) { left: 31%; top: 6px; font-size: 18px; }
+.player-greenery-ornaments span:nth-child(11) { left: 63%; top: 9px; font-size: 18px; }
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    html,
+    body {
+
+        overflow: auto;
+    }
+
+    #app {
+
+        min-height: 100vh;
+
+        height: auto;
+
+        padding: 10px;
+    }
+
+    .layout {
+
+        grid-template-columns: 1fr;
+
+        grid-template-rows:
+            52vh auto;
+
+        height: auto;
+
+        min-height: 100vh;
+
+        gap: 10px;
+    }
+
+    .number-table {
+
+        height: 52vh;
+
+        gap: 4px;
+    }
+
+    .cell {
+
+        border-radius: 5px;
+
+        border-width: 1px;
+    }
+
+    .right {
+
+        padding-bottom: 20px;
+    }
+
+    #current {
+
+        margin-bottom: 20px;
+    }
+
+    #lingo {
+
+        min-height: 40px;
+    }
+
+    .buttons {
+
+        width: 100%;
+
+        max-width: 500px;
+    }
+
+    .bingo-type-button {
+
+        font-size: 16px;
+    }
+
+    .bingo-action-button {
+
+        width: 105px;
+
+        font-size: 16px;
+    }
+
+    .player-ball,
+    .moving-player-ball {
+
+        width: 50px;
+        height: 50px;
+
+        font-size: 20px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     AUDIO
+     ======================================================= -->
+
+<audio
+    id="ballRollAudio"
+    preload="auto">
+</audio>
+
+<audio
+    id="bingoAudio"
+    preload="auto">
+</audio>
+
+
+<!-- =======================================================
+     GAME MASTER
+     ======================================================= -->
+
+<div id="app">
+
+<main class="layout">
+
+
+<section class="left">
+
+    <div
+        class="number-table"
+        id="table">
+    </div>
+
+</section>
+
+
+<section class="right">
+
+
+    <div id="lingo"></div>
+
+
+    <div id="current">
+        -
+    </div>
+
+
+    <div class="buttons">
+
+
+        <!-- RESET -->
+
+        <button id="reset">
+            Nulstil
+        </button>
+
+
+        <!-- DRAW -->
+
+        <button id="draw">
+            Træk
+        </button>
+
+
+        <!-- =================================================
+             1 RÆKKE + BINGO
+             ================================================= -->
+
+        <div class="bingo-row">
+
+            <button
+                class="bingo-type-button"
+                id="oneRow">
+
+                1 række
+
+            </button>
+
+
+            <button
+                class="bingo-action-button"
+                id="bingoOneRow">
+
+                BINGO!
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             2 RÆKKER + BINGO
+             ================================================= -->
+
+        <div class="bingo-row">
+
+            <button
+                class="bingo-type-button"
+                id="twoRows">
+
+                2 rækker
+
+            </button>
+
+
+            <button
+                class="bingo-action-button"
+                id="bingoTwoRows">
+
+                BINGO!
+
+            </button>
+
+        </div>
+
+
+        <!-- =================================================
+             FULD PLADE + BINGO
+             ================================================= -->
+
+        <div class="bingo-row">
+
+            <button
+                class="bingo-type-button"
+                id="fullBoard">
+
+                fuld plade
+
+            </button>
+
+
+            <button
+                class="bingo-action-button"
+                id="bingoFullBoard">
+
+                BINGO!
+
+            </button>
+
+        </div>
+
+
+        <!-- PLAYER SCREEN -->
+
+        <button id="player">
+            PLAYER SCREEN
+        </button>
+
+
+    </div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- =======================================================
+     GAME MASTER BINGO OVERLAY
+     ======================================================= -->
+
+<div
+    id="gmBingo">
+
+    BINGO!
+
+</div>
+
+
+<!-- =======================================================
+     PLAYER SCREEN
+     ======================================================= -->
+
+<div
+    class="player-screen"
+    id="playerScreen">
+
+
+    <div
+        class="player-bingo-type"
+        id="playerBingoType">
+    </div>
+
+
+    <div class="player-number-area">
+
+        <div
+            class="player-number"
+            id="playerNumber">
+
+            -
+
+        </div>
+
+    </div>
+
+
+    <!-- CHRISTMAS GREENERY -->
+
+    <div
+        class="player-greenery">
+
+        <div
+            class="player-greenery-branch">
+        </div>
+
+
+        <div
+            class="player-greenery-ornaments">
+
+            <span>🔴</span>
+            <span>🟡</span>
+            <span>🔔</span>
+            <span>🔴</span>
+            <span>🟡</span>
+            <span>🎀</span>
+            <span>✨</span>
+            <span>⭐</span>
+            <span>✨</span>
+            <span>🔴</span>
+            <span>🔴</span>
+
+        </div>
+
+    </div>
+
+
+    <!-- BALL AREA -->
+
+    <div
+        class="player-ball-area"
+        id="playerBallArea">
+
+        <div
+            class="player-balls"
+            id="playerBalls">
+        </div>
+
+    </div>
+
+
+    <!-- PLAYER BINGO -->
+
+    <div
+        class="player-bingo"
+        id="playerBingo">
+
+        BINGO!
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+/* =========================================================
+   BINGO LINGO
+   ========================================================= */
+
+const bingoLingo = {
+
+    1: "Én mand",
+    5: "Mand i live",
+    7: "Mand med brækket hals",
+    8: "En tyk dame",
+    11: "To tynde drenge",
+    12: "Ét dusin",
+    13: "Det uheldige tal",
+    22: "Vilde svaner",
+    24: "Juleaften",
+    30: "Unge Ole",
+    33: "Flere røvballer",
+    40: "Smør 40",
+    42: "Svaret på alting",
+    50: "Guld",
+    53: "Herbie",
+    60: "Hurra!",
+    66: "Lange tasker",
+    68: "Hippietallet",
+    69: "Det frække tal",
+    77: "To mænd med brækket hals",
+    88: "To tykke damer",
+    89: "Lille Ole",
+    90: "Gamle Ole"
+
+};
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const table =
+    document.getElementById("table");
+
+const current =
+    document.getElementById("current");
+
+const lingo =
+    document.getElementById("lingo");
+
+const drawButton =
+    document.getElementById("draw");
+
+const playerScreen =
+    document.getElementById("playerScreen");
+
+const playerNumber =
+    document.getElementById("playerNumber");
+
+const playerBingoType =
+    document.getElementById("playerBingoType");
+
+const playerBallArea =
+    document.getElementById("playerBallArea");
+
+const playerBalls =
+    document.getElementById("playerBalls");
+
+const playerBingo =
+    document.getElementById("playerBingo");
+
+const gmBingo =
+    document.getElementById("gmBingo");
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+const drawn =
+    new Set();
+
+let drawInProgress =
+    false;
+
+let selectedBingoType =
+    "";
+
+
+/* =========================================================
+   BROADCAST CHANNEL
+   ========================================================= */
+
+const channel =
+    typeof BroadcastChannel !== "undefined"
+        ? new BroadcastChannel(
+            "binglingo-player"
+        )
+        : null;
+
+let playerWindow =
+    null;
+
+
+/* =========================================================
+   AUDIO
+   ========================================================= */
+
+const ballRollAudio =
+    document.getElementById(
+        "ballRollAudio"
+    );
+
+ballRollAudio.src =
+    "ball-roll,short.mp3";
+
+
+const bingoAudio =
+    document.getElementById(
+        "bingoAudio"
+    );
+
+
+const bingoAudioFiles = {
+
+    "1 række":
+        "bingo-1-raekke.mp3",
+
+    "2 rækker":
+        "bingo-2-raekker.mp3",
+
+    "fuld plade":
+        "bingo-fuld-plade.mp3"
+
+};
+
+
+function playBallRollSound() {
+
+    ballRollAudio.currentTime =
+        0;
+
+    ballRollAudio
+        .play()
+        .catch(
+            () => {}
+        );
+}
+
+
+function stopBallRollSound() {
+
+    ballRollAudio.pause();
+
+    ballRollAudio.currentTime =
+        0;
+}
+
+
+function playBingoSound(
+    type
+) {
+
+    const file =
+        bingoAudioFiles[type];
+
+    if (!file) {
+        return;
+    }
+
+
+    bingoAudio.pause();
+
+    bingoAudio.currentTime =
+        0;
+
+    bingoAudio.src =
+        file;
+
+
+    bingoAudio
+        .play()
+        .catch(
+            error => {
+
+                console.error(
+                    "Bingo audio could not play:",
+                    error
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   FIRST USER CLICK
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+
+    () => {
+
+        ballRollAudio.load();
+
+        bingoAudio.load();
+
+    },
+
+    {
+        once: true
+    }
+
+);
+
+
+/* =========================================================
+   SEND TO PLAYER
+   ========================================================= */
+
+function sendToPlayer(
+    message
+) {
+
+    if (channel) {
+
+        channel.postMessage(
+            message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SELECT BINGO TYPE
+   ========================================================= */
+
+function selectBingoType(
+    button,
+    text
+) {
+
+    document
+        .querySelectorAll(
+            ".bingo-type-button"
+        )
+        .forEach(
+            btn =>
+                btn.classList.remove(
+                    "selected"
+                )
+        );
+
+
+    button.classList.add(
+        "selected"
+    );
+
+
+    selectedBingoType =
+        text;
+
+
+    playerBingoType.textContent =
+        text;
+
+
+    sendToPlayer({
+
+        type:
+            "bingoType",
+
+        text:
+            text
+
+    });
+
+}
+
+
+/* =========================================================
+   OPEN PLAYER SCREEN
+   ========================================================= */
+
+function openPlayerScreen() {
+
+    const playerUrl =
+        location.href.split("#")[0] +
+        "#player";
+
+
+    playerWindow =
+        window.open(
+
+            playerUrl,
+
+            "BinglingoPlayer",
+
+            "fullscreen=yes"
+
+        );
+
+
+    if (!playerWindow) {
+
+        playerScreen.classList.add(
+            "active"
+        );
+
+        document.documentElement
+            .requestFullscreen?.()
+            .catch(
+                () => {}
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   PLAYER NUMBER
+   ========================================================= */
+
+function updatePlayer(
+    number
+) {
+
+    playerNumber.textContent =
+        number;
+
+}
+
+
+/* =========================================================
+   PLAYER BALL VARIABLES
+   ========================================================= */
+
+const PLAYER_BALL_GAP =
+    8;
+
+let playerAnimationToken =
+    0;
+
+
+/* =========================================================
+   PLAYER BALL SIZE
+   ========================================================= */
+
+function getPlayerBallSize() {
+
+    const ball =
+        playerBalls.querySelector(
+            ".player-ball, .moving-player-ball"
+        );
+
+
+    return ball
+        ? ball.getBoundingClientRect().width
+        : (
+            window.innerWidth <= 700
+                ? 50
+                : 66
+        );
+
+}
+
+
+/* =========================================================
+   PLAYER GRID
+   ========================================================= */
+
+function getPlayerGridInfo() {
+
+    const width =
+        playerBalls.clientWidth;
+
+    const ballSize =
+        getPlayerBallSize();
+
+
+    const ballsPerRow =
+        Math.max(
+
+            1,
+
+            Math.floor(
+
+                (
+                    width +
+                    PLAYER_BALL_GAP
+                )
+                /
+                (
+                    ballSize +
+                    PLAYER_BALL_GAP
+                )
+
+            )
+
+        );
+
+
+    return {
+
+        ballsPerRow,
+
+        ballSize
+
+    };
+
+}
+
+
+/* =========================================================
+   PLAYER BALL POSITION
+   ========================================================= */
+
+function getPlayerBallPosition(
+    index
+) {
+
+    const grid =
+        getPlayerGridInfo();
+
+
+    const column =
+        index %
+        grid.ballsPerRow;
+
+
+    const row =
+        Math.floor(
+            index /
+            grid.ballsPerRow
+        );
+
+
+    return {
+
+        left:
+            column *
+            (
+                grid.ballSize +
+                PLAYER_BALL_GAP
+            ),
+
+        bottom:
+            row *
+            (
+                grid.ballSize +
+                PLAYER_BALL_GAP
+            ),
+
+        row,
+
+        column
+
+    };
+
+}
+
+
+/* =========================================================
+   PLAYER BALL AREA HEIGHT
+   ========================================================= */
+
+function updatePlayerBallAreaHeight() {
+
+    const grid =
+        getPlayerGridInfo();
+
+
+    const rows =
+        Math.ceil(
+            90 /
+            grid.ballsPerRow
+        );
+
+
+    const requiredHeight =
+
+        50 +
+
+        rows *
+        grid.ballSize +
+
+        (
+            rows - 1
+        ) *
+        PLAYER_BALL_GAP;
+
+
+    const minimum =
+        window.innerWidth <= 700
+            ? 290
+            : 360;
+
+
+    const height =
+        Math.max(
+            minimum,
+            requiredHeight
+        );
+
+
+    playerScreen.style.setProperty(
+
+        "--ball-area-height",
+
+        `${height}px`
+
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE PLAYER BALL POSITIONS
+   ========================================================= */
+
+function updatePlayerBallPositions() {
+
+    updatePlayerBallAreaHeight();
+
+
+    playerBalls
+        .querySelectorAll(
+            ".player-ball"
+        )
+        .forEach(
+
+            (
+                ball,
+                index
+            ) => {
+
+                const position =
+                    getPlayerBallPosition(
+                        index
+                    );
+
+
+                ball.style.left =
+                    `${position.left}px`;
+
+                ball.style.bottom =
+                    `${position.bottom}px`;
+
+                ball.style.transform =
+                    "rotate(0deg)";
+
+            }
+
+        );
+
+}
+
+
+/* =========================================================
+   ROLL PLAYER BALL
+   ========================================================= */
+
+function rollPlayerBall(
+    ball,
+    startLeft,
+    targetLeft,
+    token
+) {
+
+    return new Promise(
+        resolve => {
+
+            const duration =
+                2200;
+
+            const startTime =
+                performance.now();
+
+
+            const distance =
+                startLeft -
+                targetLeft;
+
+
+            function animate(
+                time
+            ) {
+
+                if (
+                    token !==
+                    playerAnimationToken
+                ) {
+
+                    resolve();
+
+                    return;
+
+                }
+
+
+                const progress =
+                    Math.min(
+
+                        (
+                            time -
+                            startTime
+                        ) /
+                        duration,
+
+                        1
+
+                    );
+
+
+                const eased =
+                    1 -
+                    Math.pow(
+                        1 - progress,
+                        3
+                    );
+
+
+                const left =
+                    startLeft -
+                    distance *
+                    eased;
+
+
+                const rotation =
+                    -distance *
+                    1.8 *
+                    progress;
+
+
+                ball.style.left =
+                    `${left}px`;
+
+
+                ball.style.transform =
+                    `rotate(${rotation}deg)`;
+
+
+                if (
+                    progress <
+                    1
+                ) {
+
+                    requestAnimationFrame(
+                        animate
+                    );
+
+                }
+                else {
+
+                    ball.style.left =
+                        `${targetLeft}px`;
+
+                    ball.style.transform =
+                        "rotate(0deg)";
+
+
+                    resolve();
+
+                }
+
+            }
+
+
+            requestAnimationFrame(
+                animate
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   BUMP ROW
+   ========================================================= */
+
+function bumpPlayerRow(
+    targetRow,
+    token
+) {
+
+    return new Promise(
+        resolve => {
+
+            if (
+                token !==
+                playerAnimationToken
+            ) {
+
+                resolve();
+
+                return;
+
+            }
+
+
+            const balls =
+                Array.from(
+
+                    playerBalls
+                        .querySelectorAll(
+                            ".player-ball"
+                        )
+
+                );
+
+
+            const rowBalls =
+                balls.filter(
+
+                    (
+                        ball,
+                        index
+                    ) =>
+
+                        getPlayerBallPosition(
+                            index
+                        ).row ===
+                        targetRow
+
+                );
+
+
+            if (
+                rowBalls.length === 0
+            ) {
+
+                resolve();
+
+                return;
+
+            }
+
+
+            Promise.all(
+
+                rowBalls.map(
+
+                    ball =>
+
+                        ball.animate(
+
+                            [
+
+                                {
+                                    transform:
+                                        "translateX(0)"
+                                },
+
+                                {
+                                    transform:
+                                        "translateX(-14px)"
+                                },
+
+                                {
+                                    transform:
+                                        "translateX(5px)"
+                                },
+
+                                {
+                                    transform:
+                                        "translateX(0)"
+                                }
+
+                            ],
+
+                            {
+                                duration: 280,
+
+                                easing:
+                                    "ease-out"
+
+                            }
+
+                        ).finished
+
+                )
+
+            ).then(
+
+                () => {
+
+                    resolve();
+
+                }
+
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ADD PLAYER BALL
+   ========================================================= */
+
+async function addPlayerBall(
+    number
+) {
+
+    const token =
+        playerAnimationToken;
+
+
+    updatePlayerBallAreaHeight();
+
+
+    const index =
+        playerBalls.querySelectorAll(
+            ".player-ball"
+        ).length;
+
+
+    const target =
+        getPlayerBallPosition(
+            index
+        );
+
+
+    const ball =
+        document.createElement(
+            "div"
+        );
+
+
+    const range =
+        number === 90
+            ? 9
+            : Math.floor(
+                number / 10
+            ) + 1;
+
+
+    ball.className =
+        "moving-player-ball range-" +
+        range;
+
+
+    if (
+        number === 90
+    ) {
+
+        ball.classList.add(
+            "number-90"
+        );
+
+    }
+
+
+    ball.textContent =
+        number;
+
+
+    playerBallArea.appendChild(
+        ball
+    );
+
+
+    const ballSize =
+        getPlayerBallSize();
+
+
+    const startLeft =
+        playerBallArea.clientWidth +
+        ballSize;
+
+
+    const targetLeft =
+        20 +
+        target.left;
+
+
+    ball.style.left =
+        `${startLeft}px`;
+
+
+    ball.style.bottom =
+        `${20 + target.bottom}px`;
+
+
+    playBallRollSound();
+
+
+    await rollPlayerBall(
+
+        ball,
+
+        startLeft,
+
+        targetLeft,
+
+        token
+
+    );
+
+
+    stopBallRollSound();
+
+
+    if (
+        token !==
+        playerAnimationToken
+    ) {
+
+        ball.remove();
+
+        return;
+
+    }
+
+
+    await bumpPlayerRow(
+
+        target.row,
+
+        token
+
+    );
+
+
+    if (
+        token !==
+        playerAnimationToken
+    ) {
+
+        ball.remove();
+
+        return;
+
+    }
+
+
+    ball.classList.remove(
+        "moving-player-ball"
+    );
+
+
+    ball.classList.add(
+        "player-ball"
+    );
+
+
+    playerBalls.appendChild(
+        ball
+    );
+
+
+    updatePlayerBallPositions();
+
+}
+
+
+/* =========================================================
+   RESET PLAYER BALLS
+   ========================================================= */
+
+function resetPlayerBalls() {
+
+    playerAnimationToken++;
+
+
+    stopBallRollSound();
+
+
+    const balls =
+        Array.from(
+
+            playerBalls.querySelectorAll(
+                ".player-ball, .moving-player-ball"
+            )
+
+        );
+
+
+    balls.forEach(
+
+        ball => {
+
+            ball.classList.add(
+                "reset-roll"
+            );
+
+        }
+
+    );
+
+
+    setTimeout(
+
+        () => {
+
+            playerBalls.innerHTML =
+                "";
+
+            updatePlayerBallAreaHeight();
+
+        },
+
+        1250
+
+    );
+
+}
+
+
+/* =========================================================
+   PLAYER BINGO
+   ========================================================= */
+
+function showPlayerBingo() {
+
+    playerBingo.classList.add(
+        "show"
+    );
+
+
+    for (
+        let i = 0;
+        i < 90;
+        i++
+    ) {
+
+        const piece =
+            document.createElement(
+                "div"
+            );
+
+
+        piece.className =
+            "player-confetti";
+
+
+        piece.style.left =
+            (
+                Math.random() *
+                100
+            ) +
+            "vw";
+
+
+        piece.style.background =
+            "hsl(" +
+            (
+                Math.random() *
+                360
+            ) +
+            ", 85%, 60%)";
+
+
+        piece.style.setProperty(
+
+            "--x",
+
+            (
+                (
+                    Math.random() -
+                    .5
+                ) *
+                240
+            ) +
+            "px"
+
+        );
+
+
+        piece.style.animationDelay =
+            (
+                Math.random() *
+                .45
+            ) +
+            "s";
+
+
+        playerScreen.appendChild(
+            piece
+        );
+
+
+        setTimeout(
+
+            () =>
+                piece.remove(),
+
+            3000
+
+        );
+
+    }
+
+
+    setTimeout(
+
+        () => {
+
+            playerBingo.classList.remove(
+                "show"
+            );
+
+        },
+
+        3000
+
+    );
+
+}
+
+
+/* =========================================================
+   GAME MASTER BINGO
+   ========================================================= */
+
+function showGameMasterBingo() {
+
+    gmBingo.classList.add(
+        "show"
+    );
+
+
+    for (
+        let i = 0;
+        i < 90;
+        i++
+    ) {
+
+        const piece =
+            document.createElement(
+                "div"
+            );
+
+
+        piece.className =
+            "confetti";
+
+
+        piece.style.left =
+            (
+                Math.random() *
+                100
+            ) +
+            "vw";
+
+
+        piece.style.background =
+            "hsl(" +
+            (
+                Math.random() *
+                360
+            ) +
+            ", 85%, 60%)";
+
+
+        piece.style.setProperty(
+
+            "--x",
+
+            (
+                (
+                    Math.random() -
+                    .5
+                ) *
+                240
+            ) +
+            "px"
+
+        );
+
+
+        piece.style.animationDelay =
+            (
+                Math.random() *
+                .45
+            ) +
+            "s";
+
+
+        document.body.appendChild(
+            piece
+        );
+
+
+        setTimeout(
+
+            () =>
+                piece.remove(),
+
+            3000
+
+        );
+
+    }
+
+
+    setTimeout(
+
+        () => {
+
+            gmBingo.classList.remove(
+                "show"
+            );
+
+        },
+
+        3000
+
+    );
+
+}
+
+
+/* =========================================================
+   TRIGGER BINGO
+   ========================================================= */
+
+function triggerBingo(
+    bingoType
+) {
+
+    selectedBingoType =
+        bingoType;
+
+
+    playerBingoType.textContent =
+        bingoType;
+
+
+    /*
+       Make the matching type button
+       selected.
+    */
+
+    document
+        .querySelectorAll(
+            ".bingo-type-button"
+        )
+        .forEach(
+
+            button =>
+                button.classList.remove(
+                    "selected"
+                )
+
+        );
+
+
+    if (
+        bingoType ===
+        "1 række"
+    ) {
+
+        document
+            .getElementById(
+                "oneRow"
+            )
+            .classList.add(
+                "selected"
+            );
+
+    }
+
+
+    if (
+        bingoType ===
+        "2 rækker"
+    ) {
+
+        document
+            .getElementById(
+                "twoRows"
+            )
+            .classList.add(
+                "selected"
+            );
+
+    }
+
+
+    if (
+        bingoType ===
+        "fuld plade"
+    ) {
+
+        document
+            .getElementById(
+                "fullBoard"
+            )
+            .classList.add(
+                "selected"
+            );
+
+    }
+
+
+    /*
+       Play the correct Bingo audio.
+    */
+
+    playBingoSound(
+        bingoType
+    );
+
+
+    /*
+       Game Master animation.
+    */
+
+    showGameMasterBingo();
+
+
+    /*
+       Send type to Player Screen.
+    */
+
+    sendToPlayer({
+
+        type:
+            "bingoType",
+
+        text:
+            bingoType
+
+    });
+
+
+    /*
+       Send Bingo animation.
+    */
+
+    sendToPlayer({
+
+        type:
+            "bingo",
+
+        winType:
+            bingoType
+
+    });
+
+}
+
+
+/* =========================================================
+   NUMBER TABLE
+   ========================================================= */
+
+for (
+    let number = 1;
+    number <= 90;
+    number++
+) {
+
+    const cell =
+        document.createElement(
+            "div"
+        );
+
+
+    cell.className =
+        "cell";
+
+
+    cell.textContent =
+        number;
+
+
+    cell.dataset.number =
+        number;
+
+
+    cell.addEventListener(
+
+        "click",
+
+        () =>
+            markNumber(
+                number
+            )
+
+    );
+
+
+    table.appendChild(
+        cell
+    );
+
+}
+
+
+/* =========================================================
+   MARK NUMBER
+   ========================================================= */
+
+function markNumber(
+    number
+) {
+
+    if (
+        drawn.has(number) ||
+        drawInProgress
+    ) {
+
+        return;
+
+    }
+
+
+    drawInProgress =
+        true;
+
+
+    drawButton.disabled =
+        true;
+
+
+    drawButton.classList.add(
+        "locked"
+    );
+
+
+    drawn.add(
+        number
+    );
+
+
+    const cell =
+        table.querySelector(
+
+            `[data-number="${number}"]`
+
+        );
+
+
+    if (cell) {
+
+        cell.classList.add(
+            "drawn"
+        );
+
+    }
+
+
+    current.textContent =
+        number;
+
+
+    lingo.textContent =
+        bingoLingo[number] ||
+        "";
+
+
+    updatePlayer(
+        number
+    );
+
+
+    sendToPlayer({
+
+        type:
+            "draw",
+
+        number:
+            number
+
+    });
+
+
+    setTimeout(
+
+        () => {
+
+            drawInProgress =
+                false;
+
+
+            drawButton.disabled =
+                false;
+
+
+            drawButton.classList.remove(
+                "locked"
+            );
+
+        },
+
+        2480
+
+    );
+
+}
+
+
+/* =========================================================
+   DRAW BUTTON
+   ========================================================= */
+
+drawButton.addEventListener(
+
+    "click",
+
+    () => {
+
+        if (
+            drawInProgress ||
+            drawn.size >= 90
+        ) {
+
+            return;
+
+        }
+
+
+        let number;
+
+
+        do {
+
+            number =
+                Math.floor(
+                    Math.random() * 90
+                ) + 1;
+
+        }
+
+        while (
+            drawn.has(number)
+        );
+
+
+        markNumber(
+            number
+        );
+
+    }
+
+);
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+document
+    .getElementById("reset")
+    .addEventListener(
+
+        "click",
+
+        () => {
+
+            drawn.clear();
+
+
+            table
+                .querySelectorAll(
+                    ".cell"
+                )
+                .forEach(
+
+                    cell =>
+                        cell.classList.remove(
+                            "drawn"
+                        )
+
+                );
+
+
+            current.textContent =
+                "-";
+
+
+            lingo.textContent =
+                "";
+
+
+            selectedBingoType =
+                "";
+
+
+            playerBingoType.textContent =
+                "";
+
+
+            document
+                .querySelectorAll(
+                    ".bingo-type-button"
+                )
+                .forEach(
+
+                    button =>
+                        button.classList.remove(
+                            "selected"
+                        )
+
+                );
+
+
+            bingoAudio.pause();
+
+            bingoAudio.currentTime =
+                0;
+
+
+            gmBingo.classList.remove(
+                "show"
+            );
+
+
+            resetPlayerBalls();
+
+
+            updatePlayer(
+                "-"
+            );
+
+
+            sendToPlayer({
+
+                type:
+                    "reset"
+
+            });
+
+        }
+
+    );
+
+
+/* =========================================================
+   BINGO TYPE BUTTONS
+   ========================================================= */
+
+document
+    .getElementById("oneRow")
+    .addEventListener(
+
+        "click",
+
+        () => {
+
+            selectBingoType(
+
+                document.getElementById(
+                    "oneRow"
+                ),
+
+                "1 række"
+
+            );
+
+        }
+
+    );
+
+
+document
+    .getElementById("twoRows")
+    .addEventListener(
+
+        "click",
+
+        () => {
+
+            selectBingoType(
+
+                document.getElementById(
+                    "twoRows"
+                ),
+
+                "2 rækker"
+
+            );
+
+        }
+
+    );
+
+
+document
+    .getElementById("fullBoard")
+    .addEventListener(
+
+        "click",
+
+        () => {
+
+            selectBingoType(
+
+                document.getElementById(
+                    "fullBoard"
+                ),
+
+                "fuld plade"
+
+            );
+
+        }
+
+    );
+
+
+/* =========================================================
+   SEPARATE BINGO BUTTONS
+   ========================================================= */
+
+document
+    .getElementById("bingoOneRow")
+    .addEventListener(
+
+        "click",
+
+        () => {
+
+            triggerBingo(
+                "1 række"
+            );
+
+        }
+
+    );
+
+
+document
+    .getElementById("bingoTwoRows")
+    .addEventListener(
+
+        "click",
+
+        () => {
+
+            triggerBingo(
+                "2 rækker"
+            );
+
+        }
+
+    );
+
+
+document
+    .getElementById("bingoFullBoard")
+    .addEventListener(
+
+        "click",
+
+        () => {
+
+            triggerBingo(
+                "fuld plade"
+            );
+
+        }
+
+    );
+
+
+/* =========================================================
+   PLAYER SCREEN BUTTON
+   ========================================================= */
+
+document
+    .getElementById("player")
+    .addEventListener(
+
+        "click",
+
+        openPlayerScreen
+
+    );
+
+
+/* =========================================================
+   PLAYER CHANNEL
+   ========================================================= */
+
+if (channel) {
+
+    channel.addEventListener(
+
+        "message",
+
+        event => {
+
+            const message =
+                event.data || {};
+
+
+            /* DRAW */
+
+            if (
+                message.type ===
+                "draw"
+            ) {
+
+                updatePlayer(
+                    message.number
+                );
+
+
+                addPlayerBall(
+                    message.number
+                );
+
+            }
+
+
+            /* RESET */
+
+            if (
+                message.type ===
+                "reset"
+            ) {
+
+                updatePlayer(
+                    "-"
+                );
+
+
+                playerBingoType.textContent =
+                    "";
+
+
+                resetPlayerBalls();
+
+            }
+
+
+            /* BINGO TYPE */
+
+            if (
+                message.type ===
+                "bingoType"
+            ) {
+
+                playerBingoType.textContent =
+                    message.text;
+
+            }
+
+
+            /* BINGO */
+
+            if (
+                message.type ===
+                "bingo"
+            ) {
+
+                if (
+                    message.winType
+                ) {
+
+                    playerBingoType.textContent =
+                        message.winType;
+
+                }
+
+
+                updatePlayer(
+                    "BINGO!"
+                );
+
+
+                showPlayerBingo();
+
+            }
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   PLAYER MODE
+   ========================================================= */
+
+if (
+    location.hash ===
+    "#player"
+) {
+
+    document.getElementById(
+        "app"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "gmBingo"
+    ).style.display =
+        "none";
+
+
+    playerScreen.classList.add(
+        "active"
+    );
+
+
+    document.title =
+        "Binglingo – Player";
+
+
+    updatePlayerBallAreaHeight();
+
+
+    document.addEventListener(
+
+        "dblclick",
+
+        () => {
+
+            document.documentElement
+                .requestFullscreen?.()
+                .catch(
+                    () => {}
+                );
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
+window.addEventListener(
+
+    "resize",
+
+    () => {
+
+        updatePlayerBallAreaHeight();
+
+        updatePlayerBallPositions();
+
+    }
+
+);
+
+</script>
+
+</body>
+</html>
