@@ -291,23 +291,23 @@ button:active {
 
 
 /* =========================================================
-   BINGO TYPE ROWS
+   BANKO TYPE ROWS
    ========================================================= */
 
 /*
    Each row contains TWO separate buttons.
 
    LEFT:
-   bingo type
+   banko type
 
    RIGHT:
-   Bingo action
+   Banko action
 
    They touch each other visually but remain
    separate HTML buttons.
 */
 
-.bingo-row {
+.banko-row {
 
     width: 100%;
 
@@ -318,10 +318,10 @@ button:active {
 
 
 /* =========================================================
-   BINGO TYPE BUTTON
+   BANKO TYPE BUTTON
    ========================================================= */
 
-.bingo-type-button {
+.banko-type-button {
 
     flex: 1;
 
@@ -338,12 +338,12 @@ button:active {
     border: 2px solid transparent;
 }
 
-.bingo-type-button:hover {
+.banko-type-button:hover {
 
     background: #4b5566;
 }
 
-.bingo-type-button.selected {
+.banko-type-button.selected {
 
     background: #36b37e;
 
@@ -355,10 +355,10 @@ button:active {
 
 
 /* =========================================================
-   SEPARATE BINGO BUTTON
+   SEPARATE BANKO BUTTON
    ========================================================= */
 
-.bingo-action-button {
+.banko-action-button {
 
     width: 125px;
 
@@ -379,7 +379,7 @@ button:active {
     border: 2px solid transparent;
 }
 
-.bingo-action-button:hover {
+.banko-action-button:hover {
 
     background: #8d76ff;
 }
@@ -402,10 +402,10 @@ button:active {
 
 
 /* =========================================================
-   GAME MASTER BINGO OVERLAY
+   GAME MASTER BANKO OVERLAY
    ========================================================= */
 
-#gmBingo {
+#gmBanko {
 
     position: fixed;
 
@@ -460,7 +460,7 @@ button:active {
         opacity .25s;
 }
 
-#gmBingo.show {
+#gmBanko.show {
 
     opacity: 1;
 }
@@ -633,10 +633,10 @@ button:active {
 
 
 /* =========================================================
-   PLAYER BINGO TYPE
+   PLAYER BANKO TYPE
    ========================================================= */
 
-.player-bingo-type {
+.player-banko-type {
 
     position: absolute;
 
@@ -978,10 +978,10 @@ button:active {
 
 
 /* =========================================================
-   PLAYER BINGO
+   PLAYER BANKO
    ========================================================= */
 
-.player-bingo {
+.player-banko {
 
     position: absolute;
 
@@ -1036,7 +1036,7 @@ button:active {
         opacity .25s;
 }
 
-.player-bingo.show {
+.player-banko.show {
 
     opacity: 1;
 }
@@ -1312,12 +1312,12 @@ button:active {
         max-width: 500px;
     }
 
-    .bingo-type-button {
+    .banko-type-button {
 
         font-size: 16px;
     }
 
-    .bingo-action-button {
+    .banko-action-button {
 
         width: 105px;
 
@@ -1352,7 +1352,7 @@ button:active {
 </audio>
 
 <audio
-    id="bingoAudio"
+    id="bankoAudio"
     preload="auto">
 </audio>
 
@@ -1405,13 +1405,13 @@ button:active {
 
 
         <!-- =================================================
-             1 RÆKKE + BINGO
+             1 RÆKKE + BANKO
              ================================================= -->
 
-        <div class="bingo-row">
+        <div class="banko-row">
 
             <button
-                class="bingo-type-button"
+                class="banko-type-button"
                 id="oneRow">
 
                 1 række
@@ -1420,10 +1420,10 @@ button:active {
 
 
             <button
-                class="bingo-action-button"
-                id="bingoOneRow">
+                class="banko-action-button"
+                id="bankoOneRow">
 
-                BINGO!
+                BANKO!
 
             </button>
 
@@ -1431,13 +1431,13 @@ button:active {
 
 
         <!-- =================================================
-             2 RÆKKER + BINGO
+             2 RÆKKER + BANKO
              ================================================= -->
 
-        <div class="bingo-row">
+        <div class="banko-row">
 
             <button
-                class="bingo-type-button"
+                class="banko-type-button"
                 id="twoRows">
 
                 2 rækker
@@ -1446,10 +1446,10 @@ button:active {
 
 
             <button
-                class="bingo-action-button"
-                id="bingoTwoRows">
+                class="banko-action-button"
+                id="bankoTwoRows">
 
-                BINGO!
+                BANKO!
 
             </button>
 
@@ -1457,13 +1457,13 @@ button:active {
 
 
         <!-- =================================================
-             FULD PLADE + BINGO
+             FULD PLADE + BANKO
              ================================================= -->
 
-        <div class="bingo-row">
+        <div class="banko-row">
 
             <button
-                class="bingo-type-button"
+                class="banko-type-button"
                 id="fullBoard">
 
                 fuld plade
@@ -1472,10 +1472,10 @@ button:active {
 
 
             <button
-                class="bingo-action-button"
-                id="bingoFullBoard">
+                class="banko-action-button"
+                id="bankoFullBoard">
 
-                BINGO!
+                BANKO!
 
             </button>
 
@@ -1499,13 +1499,13 @@ button:active {
 
 
 <!-- =======================================================
-     GAME MASTER BINGO OVERLAY
+     GAME MASTER BANKO OVERLAY
      ======================================================= -->
 
 <div
-    id="gmBingo">
+    id="gmBanko">
 
-    BINGO!
+    BANKO!
 
 </div>
 
@@ -1520,8 +1520,8 @@ button:active {
 
 
     <div
-        class="player-bingo-type"
-        id="playerBingoType">
+        class="player-banko-type"
+        id="playerBankoType">
     </div>
 
 
@@ -1577,13 +1577,13 @@ button:active {
     </div>
 
 
-    <!-- PLAYER BINGO -->
+    <!-- PLAYER BANKO -->
 
     <div
-        class="player-bingo"
-        id="playerBingo">
+        class="player-banko"
+        id="playerBanko">
 
-        BINGO!
+        BANKO!
 
     </div>
 
@@ -1595,10 +1595,10 @@ button:active {
 
 
 /* =========================================================
-   BINGO LINGO
+   BANKO LINGO
    ========================================================= */
 
-const bingoLingo = {
+const bankoLingo = {
 
     1: "Én mand",
     5: "Mand i live",
@@ -1649,8 +1649,8 @@ const playerScreen =
 const playerNumber =
     document.getElementById("playerNumber");
 
-const playerBingoType =
-    document.getElementById("playerBingoType");
+const playerBankoType =
+    document.getElementById("playerBankoType");
 
 const playerBallArea =
     document.getElementById("playerBallArea");
@@ -1658,11 +1658,11 @@ const playerBallArea =
 const playerBalls =
     document.getElementById("playerBalls");
 
-const playerBingo =
-    document.getElementById("playerBingo");
+const playerBanko =
+    document.getElementById("playerBanko");
 
-const gmBingo =
-    document.getElementById("gmBingo");
+const gmBanko =
+    document.getElementById("gmBanko");
 
 
 /* =========================================================
@@ -1675,7 +1675,7 @@ const drawn =
 let drawInProgress =
     false;
 
-let selectedBingoType =
+let selectedBankoType =
     "";
 
 
@@ -1707,13 +1707,13 @@ ballRollAudio.src =
     "ball-roll,short.mp3";
 
 
-const bingoAudio =
+const bankoAudio =
     document.getElementById(
-        "bingoAudio"
+        "bankoAudio"
     );
 
 
-const bingoAudioFiles = {
+const bankoAudioFiles = {
 
     "1 række":
         "bingo-1-raekke.mp3",
@@ -1749,34 +1749,34 @@ function stopBallRollSound() {
 }
 
 
-function playBingoSound(
+function playBankoSound(
     type
 ) {
 
     const file =
-        bingoAudioFiles[type];
+        bankoAudioFiles[type];
 
     if (!file) {
         return;
     }
 
 
-    bingoAudio.pause();
+    bankoAudio.pause();
 
-    bingoAudio.currentTime =
+    bankoAudio.currentTime =
         0;
 
-    bingoAudio.src =
+    bankoAudio.src =
         file;
 
 
-    bingoAudio
+    bankoAudio
         .play()
         .catch(
             error => {
 
                 console.error(
-                    "Bingo audio could not play:",
+                    "Banko audio could not play:",
                     error
                 );
 
@@ -1797,7 +1797,7 @@ document.addEventListener(
 
         ballRollAudio.load();
 
-        bingoAudio.load();
+        bankoAudio.load();
 
     },
 
@@ -1828,17 +1828,17 @@ function sendToPlayer(
 
 
 /* =========================================================
-   SELECT BINGO TYPE
+   SELECT BANKO TYPE
    ========================================================= */
 
-function selectBingoType(
+function selectBankoType(
     button,
     text
 ) {
 
     document
         .querySelectorAll(
-            ".bingo-type-button"
+            ".banko-type-button"
         )
         .forEach(
             btn =>
@@ -1853,18 +1853,18 @@ function selectBingoType(
     );
 
 
-    selectedBingoType =
+    selectedBankoType =
         text;
 
 
-    playerBingoType.textContent =
+    playerBankoType.textContent =
         text;
 
 
     sendToPlayer({
 
         type:
-            "bingoType",
+            "bankoType",
 
         text:
             text
@@ -2609,12 +2609,12 @@ function resetPlayerBalls() {
 
 
 /* =========================================================
-   PLAYER BINGO
+   PLAYER BANKO
    ========================================================= */
 
-function showPlayerBingo() {
+function showPlayerBanko() {
 
-    playerBingo.classList.add(
+    playerBanko.classList.add(
         "show"
     );
 
@@ -2697,7 +2697,7 @@ function showPlayerBingo() {
 
         () => {
 
-            playerBingo.classList.remove(
+            playerBanko.classList.remove(
                 "show"
             );
 
@@ -2711,12 +2711,12 @@ function showPlayerBingo() {
 
 
 /* =========================================================
-   GAME MASTER BINGO
+   GAME MASTER BANKO
    ========================================================= */
 
-function showGameMasterBingo() {
+function showGameMasterBanko() {
 
-    gmBingo.classList.add(
+    gmBanko.classList.add(
         "show"
     );
 
@@ -2799,7 +2799,7 @@ function showGameMasterBingo() {
 
         () => {
 
-            gmBingo.classList.remove(
+            gmBanko.classList.remove(
                 "show"
             );
 
@@ -2813,19 +2813,19 @@ function showGameMasterBingo() {
 
 
 /* =========================================================
-   TRIGGER BINGO
+   TRIGGER BANKO
    ========================================================= */
 
-function triggerBingo(
-    bingoType
+function triggerBanko(
+    bankoType
 ) {
 
-    selectedBingoType =
-        bingoType;
+    selectedBankoType =
+        bankoType;
 
 
-    playerBingoType.textContent =
-        bingoType;
+    playerBankoType.textContent =
+        bankoType;
 
 
     /*
@@ -2835,7 +2835,7 @@ function triggerBingo(
 
     document
         .querySelectorAll(
-            ".bingo-type-button"
+            ".banko-type-button"
         )
         .forEach(
 
@@ -2848,7 +2848,7 @@ function triggerBingo(
 
 
     if (
-        bingoType ===
+        bankoType ===
         "1 række"
     ) {
 
@@ -2864,7 +2864,7 @@ function triggerBingo(
 
 
     if (
-        bingoType ===
+        bankoType ===
         "2 rækker"
     ) {
 
@@ -2880,7 +2880,7 @@ function triggerBingo(
 
 
     if (
-        bingoType ===
+        bankoType ===
         "fuld plade"
     ) {
 
@@ -2896,11 +2896,11 @@ function triggerBingo(
 
 
     /*
-       Play the correct Bingo audio.
+       Play the correct Banko audio.
     */
 
-    playBingoSound(
-        bingoType
+    playBankoSound(
+        bankoType
     );
 
 
@@ -2908,7 +2908,7 @@ function triggerBingo(
        Game Master animation.
     */
 
-    showGameMasterBingo();
+    showGameMasterBanko();
 
 
     /*
@@ -2918,25 +2918,25 @@ function triggerBingo(
     sendToPlayer({
 
         type:
-            "bingoType",
+            "bankoType",
 
         text:
-            bingoType
+            bankoType
 
     });
 
 
     /*
-       Send Bingo animation.
+       Send Banko animation.
     */
 
     sendToPlayer({
 
         type:
-            "bingo",
+            "banko",
 
         winType:
-            bingoType
+            bankoType
 
     });
 
@@ -3048,7 +3048,7 @@ function markNumber(
 
 
     lingo.textContent =
-        bingoLingo[number] ||
+        bankoLingo[number] ||
         "";
 
 
@@ -3176,17 +3176,17 @@ document
                 "";
 
 
-            selectedBingoType =
+            selectedBankoType =
                 "";
 
 
-            playerBingoType.textContent =
+            playerBankoType.textContent =
                 "";
 
 
             document
                 .querySelectorAll(
-                    ".bingo-type-button"
+                    ".banko-type-button"
                 )
                 .forEach(
 
@@ -3198,13 +3198,13 @@ document
                 );
 
 
-            bingoAudio.pause();
+            bankoAudio.pause();
 
-            bingoAudio.currentTime =
+            bankoAudio.currentTime =
                 0;
 
 
-            gmBingo.classList.remove(
+            gmBanko.classList.remove(
                 "show"
             );
 
@@ -3230,7 +3230,7 @@ document
 
 
 /* =========================================================
-   BINGO TYPE BUTTONS
+   BANKO TYPE BUTTONS
    ========================================================= */
 
 document
@@ -3241,7 +3241,7 @@ document
 
         () => {
 
-            selectBingoType(
+            selectBankoType(
 
                 document.getElementById(
                     "oneRow"
@@ -3264,7 +3264,7 @@ document
 
         () => {
 
-            selectBingoType(
+            selectBankoType(
 
                 document.getElementById(
                     "twoRows"
@@ -3287,7 +3287,7 @@ document
 
         () => {
 
-            selectBingoType(
+            selectBankoType(
 
                 document.getElementById(
                     "fullBoard"
@@ -3303,18 +3303,18 @@ document
 
 
 /* =========================================================
-   SEPARATE BINGO BUTTONS
+   SEPARATE BANKO BUTTONS
    ========================================================= */
 
 document
-    .getElementById("bingoOneRow")
+    .getElementById("bankoOneRow")
     .addEventListener(
 
         "click",
 
         () => {
 
-            triggerBingo(
+            triggerBanko(
                 "1 række"
             );
 
@@ -3324,14 +3324,14 @@ document
 
 
 document
-    .getElementById("bingoTwoRows")
+    .getElementById("bankoTwoRows")
     .addEventListener(
 
         "click",
 
         () => {
 
-            triggerBingo(
+            triggerBanko(
                 "2 rækker"
             );
 
@@ -3341,14 +3341,14 @@ document
 
 
 document
-    .getElementById("bingoFullBoard")
+    .getElementById("bankoFullBoard")
     .addEventListener(
 
         "click",
 
         () => {
 
-            triggerBingo(
+            triggerBanko(
                 "fuld plade"
             );
 
@@ -3419,7 +3419,7 @@ if (channel) {
                 );
 
 
-                playerBingoType.textContent =
+                playerBankoType.textContent =
                     "";
 
 
@@ -3428,42 +3428,42 @@ if (channel) {
             }
 
 
-            /* BINGO TYPE */
+            /* BANKO TYPE */
 
             if (
                 message.type ===
-                "bingoType"
+                "bankoType"
             ) {
 
-                playerBingoType.textContent =
+                playerBankoType.textContent =
                     message.text;
 
             }
 
 
-            /* BINGO */
+            /* BANKO */
 
             if (
                 message.type ===
-                "bingo"
+                "banko"
             ) {
 
                 if (
                     message.winType
                 ) {
 
-                    playerBingoType.textContent =
+                    playerBankoType.textContent =
                         message.winType;
 
                 }
 
 
                 updatePlayer(
-                    "BINGO!"
+                    "BANKO!"
                 );
 
 
-                showPlayerBingo();
+                showPlayerBanko();
 
             }
 
@@ -3490,7 +3490,7 @@ if (
 
 
     document.getElementById(
-        "gmBingo"
+        "gmBanko"
     ).style.display =
         "none";
 
