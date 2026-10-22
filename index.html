@@ -1727,16 +1727,16 @@ const bankoAudioFiles = {
 };
 
 
+
 function playBallRollSound() {
+    ballRollAudio.currentTime = 0;
 
-    ballRollAudio.currentTime =
-        0;
-
-    ballRollAudio
-        .play()
-        .catch(
-            () => {}
+    ballRollAudio.play().catch(error => {
+        console.error(
+            "Ball roll audio error:",
+            error
         );
+    });
 }
 
 
