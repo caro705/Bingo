@@ -1554,6 +1554,24 @@ button:active {
     #playerScreen #playerNumber.player-number { font-size: min(22vh, 140px) !important; }
 }
 
+
+/* Christmas BANKO celebration: background art plus one animated particle layer. */
+#gmBanko, .player-banko {
+  background: radial-gradient(ellipse at 50% 50%, #6c3a0e 0%, #182034 42%, #07101c 82%) !important;
+  border: 0 !important; box-shadow: none !important; text-shadow: none !important;
+  font-size: 0 !important; overflow: hidden; isolation: isolate;
+}
+#gmBanko::before,#gmBanko::after,.player-banko::before,.player-banko::after {content:none !important;display:none !important}
+#gmBanko::before, .player-banko::before {content:"" !important;display:block !important;position:absolute;inset:0;z-index:2;pointer-events:none;background:url("banko_text.png") center / min(86vw, 1500px) auto no-repeat;}
+.banko-falling {position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3}
+/* Foreground border: falling snow and confetti pass behind the greenery. */
+#gmBanko::after, .player-banko::after {content:"" !important;display:block !important;position:absolute;inset:0;z-index:4;pointer-events:none;background:url("banko_border.png") center / 100% 100% no-repeat;}
+.banko-snow {position:absolute;top:-9vh;left:var(--left);width:var(--size);height:var(--size);border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.7);animation:bankoSnow var(--duration) linear var(--delay) infinite}
+.banko-paper {position:absolute;top:-10vh;left:var(--left);width:var(--width);height:var(--height);background:var(--color);border-radius:1px;animation:bankoPaper var(--duration) linear var(--delay) infinite}
+@keyframes bankoSnow {0%{transform:translate(0,-8vh);opacity:0}8%{opacity:.85}90%{opacity:.85}100%{transform:translate(var(--drift),115vh);opacity:0}}
+@keyframes bankoPaper {0%{transform:translate(0,-12vh) rotate(0deg);opacity:0}8%{opacity:1}90%{opacity:1}100%{transform:translate(var(--drift),115vh) rotate(var(--spin));opacity:0}}
+@media(prefers-reduced-motion:reduce){.banko-snow,.banko-paper{animation-duration:30s!important}}
+
 </style>
 
 </head>
@@ -2809,101 +2827,45 @@ function resetPlayerBalls() {
    PLAYER BANKO
    ========================================================= */
 
-function showPlayerBanko() {
-
-    playerBanko.classList.add(
-        "show"
-    );
-
-
-    for (
-        let i = 0;
-        i < 90;
-        i++
-    ) {
-
-        const piece =
-            document.createElement(
-                "div"
-            );
-
-
-        piece.className =
-            "player-confetti";
-
-
-        piece.style.left =
-            (
-                Math.random() *
-                100
-            ) +
-            "vw";
-
-
-        piece.style.background =
-            "hsl(" +
-            (
-                Math.random() *
-                360
-            ) +
-            ", 85%, 60%)";
-
-
-        piece.style.setProperty(
-
-            "--x",
-
-            (
-                (
-                    Math.random() -
-                    .5
-                ) *
-                240
-            ) +
-            "px"
-
-        );
-
-
-        piece.style.animationDelay =
-            (
-                Math.random() *
-                .45
-            ) +
-            "s";
-
-
-        playerScreen.appendChild(
-            piece
-        );
-
-
-        setTimeout(
-
-            () =>
-                piece.remove(),
-
-            3000
-
-        );
-
+function startBankoParticles(overlay) {
+    overlay.querySelectorAll('.banko-falling').forEach(node => node.remove());
+    const layer = document.createElement('div');
+    layer.className = 'banko-falling';
+    overlay.appendChild(layer);
+    const rand=(a,b)=>a+Math.random()*(b-a);
+    for(let i=0;i<95;i++){
+        const el=document.createElement('i'); el.className='banko-snow';
+        el.style.setProperty('--left',rand(0,100)+'%');
+        el.style.setProperty('--size',rand(2,7)+'px');
+        el.style.setProperty('--duration',rand(6,13)+'s');
+        el.style.setProperty('--delay',rand(-13,0)+'s');
+        el.style.setProperty('--drift',rand(-100,100)+'px');
+        layer.appendChild(el);
     }
+    const colors=['#ffd34e','#e32530','#f8e5aa','#b91d2b'];
+    for(let i=0;i<80;i++){
+        const el=document.createElement('i'); el.className='banko-paper';
+        el.style.setProperty('--left',rand(0,100)+'%');
+        el.style.setProperty('--width',rand(5,10)+'px');
+        el.style.setProperty('--height',rand(8,16)+'px');
+        el.style.setProperty('--color',colors[i%colors.length]);
+        el.style.setProperty('--duration',rand(5,10)+'s');
+        el.style.setProperty('--delay',rand(-10,0)+'s');
+        el.style.setProperty('--drift',rand(-150,150)+'px');
+        el.style.setProperty('--spin',rand(540,1440)+'deg');
+        layer.appendChild(el);
+    }
+    return layer;
+}
 
-
-    setTimeout(
-
-        () => {
-
-            playerBanko.classList.remove(
-                "show"
-            );
-
-        },
-
-        3000
-
-    );
-
+function showPlayerBanko() {
+    const overlay = playerBanko;
+    overlay.classList.add('show');
+    const layer = startBankoParticles(overlay);
+    setTimeout(() => {
+        overlay.classList.remove('show');
+        layer.remove();
+    }, 3000);
 }
 
 
@@ -2912,100 +2874,13 @@ function showPlayerBanko() {
    ========================================================= */
 
 function showGameMasterBanko() {
-
-    gmBanko.classList.add(
-        "show"
-    );
-
-
-    for (
-        let i = 0;
-        i < 90;
-        i++
-    ) {
-
-        const piece =
-            document.createElement(
-                "div"
-            );
-
-
-        piece.className =
-            "confetti";
-
-
-        piece.style.left =
-            (
-                Math.random() *
-                100
-            ) +
-            "vw";
-
-
-        piece.style.background =
-            "hsl(" +
-            (
-                Math.random() *
-                360
-            ) +
-            ", 85%, 60%)";
-
-
-        piece.style.setProperty(
-
-            "--x",
-
-            (
-                (
-                    Math.random() -
-                    .5
-                ) *
-                240
-            ) +
-            "px"
-
-        );
-
-
-        piece.style.animationDelay =
-            (
-                Math.random() *
-                .45
-            ) +
-            "s";
-
-
-        document.body.appendChild(
-            piece
-        );
-
-
-        setTimeout(
-
-            () =>
-                piece.remove(),
-
-            3000
-
-        );
-
-    }
-
-
-    setTimeout(
-
-        () => {
-
-            gmBanko.classList.remove(
-                "show"
-            );
-
-        },
-
-        3000
-
-    );
-
+    const overlay = gmBanko;
+    overlay.classList.add('show');
+    const layer = startBankoParticles(overlay);
+    setTimeout(() => {
+        overlay.classList.remove('show');
+        layer.remove();
+    }, 3000);
 }
 
 
