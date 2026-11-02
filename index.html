@@ -1359,6 +1359,113 @@ button:active {
 .player-screen .player-ball-area { overflow: hidden; }
 @media(max-width:850px) { #app { padding: 120px 45px 85px; } .christmas-frame .sl,.christmas-frame .sr { width: 32px; } }
 
+
+/* =========================================================
+   FINAL FIX: ALL GAME MASTER CONTENT INSIDE CHRISTMAS FRAME
+   Visual layout only. Original JavaScript is unchanged.
+   ========================================================= */
+#app {
+    position: relative;
+    isolation: isolate;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    padding: clamp(84px, 10.5vh, 112px) clamp(54px, 4.4vw, 90px) clamp(94px, 11vh, 125px);
+    overflow: hidden;
+}
+#app > .layout {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 58%) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: clamp(14px, 2.8vw, 42px);
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+#app .left, #app .right { min-width: 0; min-height: 0; }
+#app .left { align-items: stretch; overflow: hidden; }
+#app .number-table {
+    width: 100%; height: 100%; min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    grid-template-rows: repeat(9, minmax(0, 1fr));
+    gap: clamp(3px, .4vw, 6px);
+}
+#app .cell {
+    min-width: 0; min-height: 0; padding: 0;
+    font-size: clamp(12px, min(2vw, 3.1vh), 32px);
+    line-height: 1;
+    border-radius: 7px;
+}
+#app .right {
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    overflow: hidden;
+}
+#app #lingo {
+    min-height: 0;
+    font-size: clamp(20px, min(3vw, 4vh), 48px);
+    line-height: 1.1;
+    margin: 0 0 clamp(4px, 1vh, 12px);
+}
+#app #current {
+    font-size: clamp(64px, min(12vw, 16vh), 180px);
+    line-height: 1;
+    margin: 0 0 clamp(8px, 1.3vh, 18px);
+}
+#app .buttons {
+    width: min(100%, 450px);
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(5px, .8vh, 10px);
+    flex-shrink: 1;
+    min-height: 0;
+}
+#app #reset, #app #draw, #app #player {
+    width: 100%;
+    height: clamp(38px, 5.8vh, 62px);
+    min-height: 0;
+    flex-shrink: 1;
+    font-size: clamp(15px, 1.65vw, 23px);
+    margin-top: 0;
+}
+#app .banko-row { width: 100%; gap: 3px; flex-shrink: 1; min-height: 0; }
+#app .banko-type-button, #app .banko-action-button {
+    height: clamp(36px, 5vh, 54px);
+    min-height: 0;
+    font-size: clamp(13px, 1.3vw, 19px);
+}
+#app .banko-type-button { flex: 1; min-width: 0; }
+#app .banko-action-button { width: 32%; flex-shrink: 0; }
+#app .christmas-frame { pointer-events: none; z-index: 3; }
+#app .christmas-frame span { pointer-events: none; }
+/* Player view retains its original behavior and decorations. */
+@media (max-width: 850px) {
+    html, body { overflow: hidden; }
+    #app {
+        height: 100vh; height: 100dvh; min-height: 0;
+        padding: 76px 42px 80px;
+    }
+    #app > .layout {
+        grid-template-columns: minmax(0, 56%) minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
+        height: 100%; min-height: 0;
+        gap: 10px;
+    }
+    #app .number-table { height: 100%; gap: 2px; }
+    #app .cell { font-size: clamp(9px, 1.9vw, 18px); border-width: 1px; }
+    #app #lingo { font-size: clamp(14px, 2.5vw, 25px); }
+    #app #current { font-size: clamp(40px, 9vw, 100px); }
+    #app .buttons { gap: 4px; }
+    #app #reset, #app #draw, #app #player { height: clamp(30px, 5vh, 44px); font-size: 13px; }
+    #app .banko-type-button, #app .banko-action-button {
+        height: clamp(28px, 4.5vh, 40px); font-size: 11px;
+    }
+}
+
 </style>
 
 </head>
