@@ -1466,6 +1466,23 @@ button:active {
     }
 }
 
+
+/* FINAL CHRISTMAS BORDER FIX: use the PNG in the repository root. */
+.christmas-frame { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.christmas-frame span { display:none !important; }
+.christmas-frame::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:url("christmas_full_border_clean.png");
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:100% 100%;
+    pointer-events:none;
+}
+#app > .christmas-frame { z-index:3; }
+.player-screen > .christmas-frame { z-index:10; }
+
 </style>
 
 </head>
