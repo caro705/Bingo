@@ -1513,6 +1513,47 @@ button:active {
     .player-screen .player-number { font-size: clamp(80px, 20vh, 160px); }
 }
 
+
+/* DEFINITIVE PLAYER HEADING / NUMBER SEPARATION */
+#playerScreen.player-screen { --ball-area-height: 360px; }
+#playerScreen #playerBankoType.player-banko-type {
+    position: absolute !important;
+    top: clamp(95px, 12vh, 125px) !important;
+    left: 10% !important; right: 10% !important;
+    height: clamp(45px, 8vh, 75px) !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    font-size: clamp(28px, 5vh, 64px) !important;
+    line-height: 1.1 !important;
+    z-index: 30 !important;
+}
+#playerScreen .player-number-area {
+    position: absolute !important;
+    top: clamp(185px, 23vh, 225px) !important;
+    bottom: calc(var(--ball-area-height) + 20px) !important;
+    left: 10% !important; right: 10% !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    min-height: 0 !important;
+    z-index: 20 !important;
+}
+#playerScreen #playerNumber.player-number {
+    position: static !important;
+    display: block !important;
+    font-size: clamp(75px, 24vh, 230px) !important;
+    line-height: 1 !important;
+    height: auto !important;
+    max-height: 100% !important;
+    margin: 0 !important;
+    transform: none !important;
+}
+@media (max-height: 650px) {
+    #playerScreen #playerBankoType.player-banko-type { top: 55px !important; font-size: 34px !important; }
+    #playerScreen .player-number-area { top: 120px !important; bottom: 155px !important; }
+    #playerScreen #playerNumber.player-number { font-size: min(22vh, 140px) !important; }
+}
+
 </style>
 
 </head>
