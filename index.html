@@ -1651,6 +1651,23 @@ button:active {
   #playerScreen.player-screen #playerNumber.player-number { font-size: clamp(65px, 20vh, 135px) !important; }
 }
 
+
+/* FINAL RESPONSIVE BALL SAFE ZONE — inside the Christmas border */
+#playerScreen.player-screen {
+  --ball-side-clearance: clamp(105px, 7.5vw, 160px);
+}
+#playerScreen.player-screen #playerBalls.player-balls {
+  left: var(--ball-side-clearance) !important;
+  right: var(--ball-side-clearance) !important;
+  bottom: 20px !important;
+  width: auto !important;
+}
+@media (max-width: 700px) {
+  #playerScreen.player-screen {
+    --ball-side-clearance: clamp(55px, 10vw, 100px);
+  }
+}
+
 </style>
 
 </head>
@@ -2764,8 +2781,11 @@ async function addPlayerBall(
         ballSize;
 
 
+    // Align the moving ball with the inset settled-ball grid.
+    // Both use the same coordinates on every screen size.
     const targetLeft =
-        20 +
+        playerBalls.getBoundingClientRect().left -
+        playerBallArea.getBoundingClientRect().left +
         target.left;
 
 
@@ -2773,8 +2793,13 @@ async function addPlayerBall(
         `${startLeft}px`;
 
 
+    const targetBottom =
+        playerBallArea.getBoundingClientRect().bottom -
+        playerBalls.getBoundingClientRect().bottom +
+        target.bottom;
+
     ball.style.bottom =
-        `${20 + target.bottom}px`;
+        `${targetBottom}px`;
 
 
     playBallRollSound();
