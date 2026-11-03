@@ -1572,6 +1572,24 @@ button:active {
 @keyframes bankoPaper {0%{transform:translate(0,-12vh) rotate(0deg);opacity:0}8%{opacity:1}90%{opacity:1}100%{transform:translate(var(--drift),115vh) rotate(var(--spin));opacity:0}}
 @media(prefers-reduced-motion:reduce){.banko-snow,.banko-paper{animation-duration:30s!important}}
 
+
+/* PLAYER SCREEN FIX: Keep every bingo ball above the bottom Christmas greenery. */
+#playerScreen.player-screen .player-ball-area {
+    bottom: clamp(92px, 11vh, 118px) !important;
+    z-index: 15 !important;
+}
+#playerScreen.player-screen .player-number-area {
+    bottom: calc(var(--ball-area-height) + clamp(92px, 11vh, 118px) + 12px) !important;
+}
+#playerScreen.player-screen .player-banko-type {
+    z-index: 25 !important;
+}
+/* Christmas frame stays visible without obscuring the balls. */
+#playerScreen.player-screen > .christmas-frame {
+    z-index: 10 !important;
+    pointer-events: none;
+}
+
 </style>
 
 </head>
