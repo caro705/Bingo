@@ -3409,6 +3409,7 @@ document
         () => {
 
             drawn.clear();
+            devAll90Active = false;
             drawInProgress = false;
             drawButton.disabled = false;
             drawButton.classList.remove("locked");
@@ -3641,6 +3642,10 @@ window.addEventListener("message", event => {
         setBallRollMuted(message.muted, false);
     } else if (message.type === "playerMuteReady" && location.hash !== "#player") {
         event.source.postMessage({ type: "ballRollMute", muted: ballRollMuted }, "*");
+        // Synchronize the developer preview if the player window opened later.
+        if (devAll90Active) event.source.postMessage({ type: "devFill90" }, "*");
+    } else if (message.type === "devFill90" && location.hash === "#player") {
+        devDisplayAll90Balls();
     }
 });
 
@@ -3828,6 +3833,7 @@ window.addEventListener(
 /* =========================================================
    DEVELOPER TEST: SHOW ALL 90 BALLS IMMEDIATELY
    ========================================================= */
+let devAll90Active = false;
 function devDisplayAll90Balls() {
     playerAnimationToken++; // Cancel an in-progress rolling animation.
     stopBallRollSound();
@@ -3854,8 +3860,14 @@ if (location.hash !== '#player') {
         drawInProgress = false;
         drawButton.disabled = true;
         drawButton.classList.add('locked');
+        devAll90Active = true;
         devDisplayAll90Balls();
         sendToPlayer({ type: 'devFill90' });
+        // Local file:// windows may not share a BroadcastChannel origin.
+        // postMessage directly reaches the Player Screen opened by this page.
+        if (playerWindow && !playerWindow.closed) {
+            playerWindow.postMessage({ type: 'devFill90' }, '*');
+        }
     });
 } else {
     document.getElementById('devFill90').style.display = 'none';
