@@ -2077,8 +2077,13 @@ function setBallRollMuted(muted, broadcast = true) {
     if (ballRollMuted) { ballRollAudio.pause(); ballRollAudio.currentTime = 0; }
     muteBallRollButton.setAttribute("aria-pressed", String(ballRollMuted));
     muteBallRollButton.textContent = ballRollMuted ? "🔇 Boldlyd: FRA" : "🔊 Boldlyd: TIL";
-    if (broadcast && typeof sendToPlayer === "function") {
+    if (broadcast) {
         sendToPlayer({ type: "ballRollMute", muted: ballRollMuted });
+        // Direct window messaging also works when local file:// pages
+        // cannot share a BroadcastChannel origin.
+        if (playerWindow && !playerWindow.closed) {
+            playerWindow.postMessage({ type: "ballRollMute", muted: ballRollMuted }, "*");
+        }
     }
 }
 muteBallRollButton.addEventListener("click", () => setBallRollMuted(!ballRollMuted));
@@ -3627,6 +3632,18 @@ document
     );
 
 
+/* Reliable mute synchronization between Game Master and Player.
+   postMessage works for separately opened local HTML windows. */
+window.addEventListener("message", event => {
+    if (event.source !== window.opener && event.source !== playerWindow) return;
+    const message = event.data || {};
+    if (message.type === "ballRollMute") {
+        setBallRollMuted(message.muted, false);
+    } else if (message.type === "playerMuteReady" && location.hash !== "#player") {
+        event.source.postMessage({ type: "ballRollMute", muted: ballRollMuted }, "*");
+    }
+});
+
 /* =========================================================
    PLAYER CHANNEL
    ========================================================= */
@@ -3758,6 +3775,10 @@ if (
         "active"
     );
 
+    // Ask the Game Master for its current mute setting on startup.
+    if (window.opener && !window.opener.closed) {
+        window.opener.postMessage({ type: "playerMuteReady" }, "*");
+    }
 
     document.title =
         "Binglingo – Player";
