@@ -1588,6 +1588,36 @@ button:active {
     pointer-events: none;
 }
 
+
+/* 2026-11-03: Large-screen Christmas border clearance.
+   Keep balls BEHIND the frame; lift their complete rolling area so
+   the ball numbers are not obscured by the bottom garland. */
+#playerScreen.player-screen .player-ball-area {
+    bottom: clamp(145px, 17vh, 195px) !important;
+    z-index: 5 !important;
+}
+#playerScreen.player-screen > .christmas-frame {
+    z-index: 10 !important;
+}
+/* Heading clears the top-center Christmas bow. */
+#playerScreen.player-screen #playerBankoType.player-banko-type {
+    top: clamp(135px, 16vh, 180px) !important;
+    z-index: 20 !important;
+}
+/* Drawn number stays below the heading and above the balls. */
+#playerScreen.player-screen .player-number-area {
+    top: clamp(220px, 26vh, 290px) !important;
+    bottom: calc(var(--ball-area-height) + clamp(145px, 17vh, 195px) + 8px) !important;
+}
+@media (max-height: 700px) {
+    #playerScreen.player-screen .player-ball-area { bottom: clamp(100px, 16vh, 145px) !important; }
+    #playerScreen.player-screen #playerBankoType.player-banko-type { top: 95px !important; }
+    #playerScreen.player-screen .player-number-area {
+        top: 160px !important;
+        bottom: calc(var(--ball-area-height) + clamp(100px, 16vh, 145px) + 8px) !important;
+    }
+}
+
 </style>
 
 </head>
