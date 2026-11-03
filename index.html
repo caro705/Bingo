@@ -1618,6 +1618,39 @@ button:active {
     }
 }
 
+
+/* Responsive player-screen correction: one coordinate system for both
+   moving balls and settled balls. The frame remains above them. */
+#playerScreen.player-screen {
+  --player-bottom-clearance: clamp(110px, 15vh, 190px);
+  --player-top-clearance: clamp(128px, 17vh, 190px);
+}
+#playerScreen.player-screen #playerBallArea.player-ball-area {
+  bottom: var(--player-bottom-clearance) !important;
+  transform: none !important;
+  z-index: 5 !important;
+  overflow: visible !important;
+}
+#playerScreen.player-screen #playerBalls.player-balls {
+  bottom: 20px !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+#playerScreen.player-screen > .christmas-frame { z-index: 10 !important; }
+#playerScreen.player-screen #playerBankoType.player-banko-type {
+  top: var(--player-top-clearance) !important;
+  z-index: 20 !important;
+  font-size: clamp(26px, 4.8vh, 58px) !important;
+}
+#playerScreen.player-screen .player-number-area {
+  top: calc(var(--player-top-clearance) + clamp(58px, 8vh, 90px)) !important;
+  bottom: calc(var(--ball-area-height) + var(--player-bottom-clearance) + 8px) !important;
+}
+@media (max-height: 650px) {
+  #playerScreen.player-screen { --player-bottom-clearance: clamp(80px, 14vh, 110px); --player-top-clearance: clamp(85px, 15vh, 120px); }
+  #playerScreen.player-screen #playerNumber.player-number { font-size: clamp(65px, 20vh, 135px) !important; }
+}
+
 </style>
 
 </head>
